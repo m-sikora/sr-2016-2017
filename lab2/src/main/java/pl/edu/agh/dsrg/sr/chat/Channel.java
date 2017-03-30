@@ -10,6 +10,7 @@ import org.jgroups.util.Base64;
 import pl.edu.agh.dsrg.sr.chat.protos.ChatOperationProtos;
 
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -66,7 +67,7 @@ public class Channel {
             this.jChannel = new JChannel(false);
             ProtocolStack protocolStack = new ProtocolStack();
             jChannel.setProtocolStack(protocolStack);
-            protocolStack.addProtocol(new UDP())
+            protocolStack.addProtocol(new UDP().setValue("mcast_group_addr", InetAddress.getByName("230.0.0.36")))
                     .addProtocol(new PING())
                     .addProtocol(new MERGE3())
                     .addProtocol(new FD_SOCK())

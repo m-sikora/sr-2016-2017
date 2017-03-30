@@ -188,7 +188,6 @@ public class Main {
 
                 @Override
                 public void setState(InputStream inputStream) {
-                	System.out.println("@@@@@@@@@@@@@@@@@@@@@@#!@#@!#@!CHCHEUCHE");
                     try {
                         ChatOperationProtos.ChatState chatState =
                                 ChatOperationProtos.ChatState.parseFrom(inputStream);
@@ -203,7 +202,7 @@ public class Main {
 
                                 if (!stringToUsersMap.containsKey(chatAction.getChannel())) {
                                     stringToUsersMap.put(chatAction.getChannel(), new ArrayList<String>());
-                                } else if (!stringToUsersMap.get(chatAction.getChannel())
+                                } if (!stringToUsersMap.get(chatAction.getChannel())
                                         .contains(chatAction.getNickname())) {
                                     stringToUsersMap.get(chatAction.getChannel()).add(chatAction.getNickname());
                                 }
@@ -225,7 +224,6 @@ public class Main {
 
                 @Override
                 public void getState(OutputStream outputStream) {
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     ChatOperationProtos.ChatState.Builder builder = ChatOperationProtos.ChatState.newBuilder();
                     for (Channel c : stringToChannelMap.values()) {
                         for (String s : c.getUsers()) {
@@ -259,14 +257,15 @@ public class Main {
     }
 
     public static String parseCommand(String cmd) {
-        if (Pattern.compile("/setname \\w*").matcher(cmd).matches()) {
-            nickname = cmd.substring(9);
-            return "nickname set";
-        }
-        else if (Pattern.compile("/setname .*").matcher(cmd).matches()) {
-            return "incorrect nickname format";
-        }
-        else if (Pattern.compile("/checkname").matcher(cmd).matches()) {
+//        if (Pattern.compile("/setname \\w*").matcher(cmd).matches()) {
+//            nickname = cmd.substring(9);
+//            return "nickname set";
+//        }
+//        else if (Pattern.compile("/setname .*").matcher(cmd).matches()) {
+//            return "incorrect nickname format";
+//        }
+//        else
+        if (Pattern.compile("/checkname").matcher(cmd).matches()) {
             if (nickname != null) {
                 return "current nickname: " + nickname;
             }
@@ -312,7 +311,6 @@ public class Main {
                 System.out.println(parseCommand(ioInput.readLine()));
             } catch (IOException e) {e.printStackTrace();}
         }
-        System.out.println("bb");
         return;
     }
 }
