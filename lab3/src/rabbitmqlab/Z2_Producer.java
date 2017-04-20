@@ -21,7 +21,7 @@ public class Z2_Producer {
         Channel channel = connection.createChannel();
 
         // exchange
-        String EXCHANGE_NAME = "ex1";
+        String EXCHANGE_NAME = "e";
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
         while (true) {
@@ -30,9 +30,9 @@ public class Z2_Producer {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter message: ");
             String message = br.readLine();
-
             System.out.println("Enter key: ");
             String key = br.readLine();
+
 
             // break condition
             if ("exit".equals(message)) {

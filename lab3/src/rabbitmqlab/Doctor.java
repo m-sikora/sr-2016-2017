@@ -24,12 +24,11 @@ public class Doctor {
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         channel = connection.createChannel();
-        channel.exchangeDeclare("requests", BuiltinExchangeType.DIRECT);
+        channel.exchangeDeclare("req", BuiltinExchangeType.DIRECT);
 
-        channel.exchangeDeclare("results", BuiltinExchangeType.DIRECT);
-        String queueName = "q2";
-        channel.queueDeclare(queueName, false, false, false, null);
-        channel.queueBind(queueName, "results", Integer.toString(id));
+        channel.exchangeDeclare("res", BuiltinExchangeType.DIRECT);
+        String queueName = channel.queueDeclare().getQueue();
+        channel.queueBind(queueName, "res", Integer.toString(id));
 
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
@@ -37,7 +36,7 @@ public class Doctor {
                 String message = new String(body, "UTF-8");
                 String key = envelope.getRoutingKey();
 
-                System.out.println("Received: " + message);
+                System.out.println("Received: " + message + " (" + key + ")");
             }
         };
 
@@ -45,15 +44,17 @@ public class Doctor {
     }
 
     public void sendRequest(String type, String message) throws Exception{
-        channel.basicPublish("requests", type, null, new String(this.id + ";" + message).getBytes("UTF-8"));
+        channel.basicPublish("req", type, null, new String(this.id + ";" + message).getBytes("UTF-8"));
     }
 
     public static void main (String args[]) throws Exception {
-        Doctor doc = new Doctor(9);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter doctor id: ");
+        Doctor doc = new Doctor(Integer.parseInt(br.readLine()));
+        System.out.println("Created doctor " + doc.id);
 
         while (true) {
             // read msg
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter patient data: ");
             String message = br.readLine();
             if (message == "r")
@@ -66,6 +67,7 @@ public class Doctor {
             if ("exit".equals(message)) {
                 break;
             }
+
 
             // publish
             doc.sendRequest(key, message);

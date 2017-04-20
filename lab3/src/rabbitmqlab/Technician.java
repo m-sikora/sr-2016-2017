@@ -28,14 +28,13 @@ public class Technician {
         Connection connection = factory.newConnection();
         channel = connection.createChannel();
 
-        channel.exchangeDeclare("requests", BuiltinExchangeType.DIRECT);
+        channel.exchangeDeclare("req", BuiltinExchangeType.DIRECT);
         channel.exchangeDeclare("results", BuiltinExchangeType.DIRECT);
-        String queueName = "q1";
-        channel.queueDeclare(queueName, false, false, false, null);
+        String queueName = channel.queueDeclare().getQueue();
 
-        channel.queueBind(queueName, "requests", knownTypes.get(0).name);
+        channel.queueBind(queueName, "req", knownTypes.get(0).name);
         System.out.println("bound queue " + knownTypes.get(0).name);
-        channel.queueBind(queueName, "requests", knownTypes.get(1).name);
+        channel.queueBind(queueName, "req", knownTypes.get(1).name);
         System.out.println("bound queue " + knownTypes.get(1).name);
         System.out.println("created queue: " + queueName);
 
@@ -62,7 +61,7 @@ public class Technician {
                 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
                 String res = br.readLine();
 
-                channel.basicPublish("results", docId, null, res.getBytes("UTF-8"));
+                channel.basicPublish("res", docId, null, res.getBytes("UTF-8"));
             }
         };
 
