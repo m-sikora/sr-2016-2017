@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sr.grpc.gen";
+option java_outer_classname = "LabProto";
+option objc_class_prefix = "HLW";
+
+package lab;
+
+message RegistrationTicket {
+  string something = 1;
+}
+
+message RegistrationResult {
+  int32 id = 1;
+}
+
+service UserManager {
+  rpc RegisterUser (RegistrationTicket) returns (RegistrationResult) {}
+}
+
+message ListDevicesRequest {
+  int32 userId = 1;
+}
+
+message DeviceInfo {
+  string info = 1;
+}
+
+message ControlDeviceRequest {
+  int32 userId = 1;
+  string deviceName = 2;
+}
+
+message ControlDeviceResponse {
+  bool accepted = 1;
+  string intruction = 2;
+}
+
+message ReleaseDeviceRequest {
+  int32 userId = 1;
+}
+
+message ReleaseDeviceResponse {
+  bool accepted = 1;
+}
+
+message ActionParams {
+  int32 userId = 1;
+  string params = 2;
+}
+
+message ActionResult {
+  string result = 1;
+}
+
+message ObserveDeviceRequest {
+    int32 userId = 1;
+    string deviceName = 2;
+}
+
+message ObserveDeviceResponse {
+    bool accepted = 1;
+    string result = 2;
+    string command = 3;
+}
+
+message UnobserveDeviceRequest {
+    int32 userId = 1;
+}
+
+message UnobserveDeviceResponse {
+    bool accepted = 1;
+}
+
+service DeviceManager {
+  rpc ListDevices (ListDevicesRequest) returns (stream DeviceInfo) {}
+  rpc ControlDevice (ControlDeviceRequest) returns (ControlDeviceResponse) {}
+  rpc ReleaseDevice (ReleaseDeviceRequest) returns (ReleaseDeviceResponse) {}
+  rpc Action (ActionParams) returns (ActionResult) {}
+  rpc ObserveDevice (ObserveDeviceRequest) returns (stream ObserveDeviceResponse) {}
+  rpc UnobserveDevice (UnobserveDeviceRequest) returns (UnobserveDeviceResponse) {}
+}
